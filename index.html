@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 DATE IDEAS 🐾</title>
+    <link rel="stylesheet" href="style.css?v=1.4">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <span class="cat-logo">💙</span>
+        <h1>🐾 DATE IDEAS 🐾</h1>
+    </header>
+
+    <main class="randomizer">
+        <div class="result-card">
+            <div class="result-placeholder">Press the button to get a date idea! 🐾</div>
+        </div>
+        
+        <button class="spin-btn" onclick="spinDate()">🎲 Surprise Me!</button>
+
+        <div class="filter-row" style="margin-top: 30px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <button class="filter-btn active" onclick="filterIdeas('All')">All</button>
+            <button class="filter-btn" onclick="filterIdeas('Cultural')">Cultural</button>
+            <button class="filter-btn" onclick="filterIdeas('Games & Fun')">Games</button>
+            <button class="filter-btn" onclick="filterIdeas('Food & Drinks')">Food</button>
+            <button class="filter-btn" onclick="filterIdeas('Outdoor')">Outdoor</button>
+        </div>
+    </main>
+
+    <section class="section">
+        <h2 class="section-title" id="list-title">📜 All Ideas</h2>
+        <div id="ideas-list"></div>
+
+        <div class="add-form">
+            <h3>🐾 Add a New Date Idea</h3>
+            <div class="form-row">
+                <input type="text" id="idea-name" class="form-input" placeholder="e.g. Bowling night 🎳">
+                <select id="idea-category" class="form-select">
+                    <option value="Cultural">Cultural</option>
+                    <option value="Games & Fun">Games & Fun</option>
+                    <option value="Food & Drinks">Food & Drinks</option>
+                    <option value="Outdoor">Outdoor</option>
+                    <option value="Cozy & Indoors">Cozy & Indoors</option>
+                    <option value="Creative">Creative</option>
+                </select>
+                <button class="add-btn" onclick="addIdea()">+ Add</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="done-section">
+        <button class="done-toggle" onclick="toggleDoneList()">
+            ✅ Dates We've Done (<span id="done-count">0</span>)
+        </button>
+        <div id="done-list" class="done-list"></div>
+    </section>
+
+    <div id="toast" class="toast">Action Syncing... ☁️</div>
+
+    <template id="date-card-template">
+        <div class="date-card">
+            <div class="card-emoji" style="font-size: 1.5rem; margin-right: 15px;"></div>
+            <div class="card-info" style="flex: 1;">
+                <div class="date-name" style="font-weight: 800; font-size: 1.1rem; color: #4a3728;"></div>
+                <span class="result-cat"></span>
+            </div>
+            <div class="card-actions" style="display: flex; align-items: center; gap: 10px;">
+                <button class="tick-btn"></button>
+                <button class="delete-btn" style="background:none; border:none; cursor:pointer; font-size: 1.2rem; opacity: 0.3;">🗑️</button>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
