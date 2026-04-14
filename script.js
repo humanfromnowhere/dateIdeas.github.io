@@ -53,7 +53,7 @@ window.handleLogin = function() {
     }
 
     auth.signInWithEmailAndPassword(email, password).catch(error => {
-        errorEl.innerText = "Hatalı giriş! Şifreni kontrol et. 🥺";
+        errorEl.innerText = "Hatalı giriş! Şifreni kontrol et...";
     });
 };
 
