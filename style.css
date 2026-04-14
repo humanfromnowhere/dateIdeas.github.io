@@ -228,3 +228,40 @@ header h1 {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
 }
+/* ==========================================
+   MOBİL UYUM (RESPONSIVE DESIGN) DÜZELTMELERİ
+   ========================================== */
+@media (max-width: 600px) {
+    /* 1. Ekran Çubuğu Hatasını Çözme */
+    #login-screen {
+        height: 100dvh; /* Telefonda adres çubuğu açılıp kapandığında arkaplanın zıplamasını engeller */
+    }
+
+    /* 2. Login Kutusunu Daraltma */
+    .login-box {
+        padding: 25px 20px; /* İç boşlukları azalttık ki yazılar sıkışmasın */
+        width: 92%; /* Telefonda kenarlara biraz daha yaklaşsın */
+    }
+
+    /* 3. Başlığı Küçültme */
+    .login-box h2 {
+        font-size: 1.6rem; 
+        margin-bottom: 15px;
+    }
+
+    /* 4. iPhone Auto-Zoom Engelleme (Çok Kritik!) */
+    .login-input {
+        font-size: 16px !important; /* iOS, 16px'den küçük yazılarda otomatik zoom yapar. Bunu engelledik. */
+        padding: 12px;
+    }
+
+    /* 5. Şifre Gözünü Hizalama */
+    .password-container .login-input { 
+        padding-right: 40px;
+    }
+
+    .login-btn {
+        padding: 12px;
+        font-size: 1rem;
+    }
+}
