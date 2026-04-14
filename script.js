@@ -1,133 +1,92 @@
-// 1. Firebase Yapılandırması
+// 1. Firebase Konfigürasyonu
 const firebaseConfig = {
-  apiKey: "AIzaSyDRMXH9Scg88-FWDAC6eaaBKU5fjfwn7dw",
-  authDomain: "date-ideas-app-ee6b5.firebaseapp.com",
-  databaseURL: "https://date-ideas-app-ee6b5-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "date-ideas-app-ee6b5",
-  storageBucket: "date-ideas-app-ee6b5.firebasestorage.app",
-  messagingSenderId: "623159578565",
-  appId: "1:623159578565:web:1b2a70b0418e245cc405ac"
+    apiKey: "AIzaSyDRMXH9Scg88-FWDAC6eaaBKU5fjfwn7dw",
+    authDomain: "date-ideas-app-ee6b5.firebaseapp.com",
+    databaseURL: "https://date-ideas-app-ee6b5-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "date-ideas-app-ee6b5",
+    storageBucket: "date-ideas-app-ee6b5.firebasestorage.app",
+    messagingSenderId: "623159578565",
+    appId: "1:623159578565:web:1b2a70b0418e245cc405ac"
 };
 
-// 2. Başlatma ve Kategori Emojileri
+// Firebase Başlatma
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const database = firebase.database();
 const ideasRef = database.ref('ideas');
 
-const CATEGORY_EMOJIS = {
-    'Cultural': '🎭',
-    'Games & Fun': '🎮',
-    'Food & Drinks': '🍕',
-    'Outdoor': '🌳',
-    'Cozy & Indoors': '🏠',
-    'Creative': '🎨',
-    'All': '📜',
-    'General': '✨'
-};
-
+// Global Değişkenler
 let ideas = [];
 let currentFilter = 'All';
 
-// Orijinal Liste (Firebase boşsa yüklenecek)
-const DEFAULT_IDEAS = [
-    { name: 'Bilardo Date', category: 'Games & Fun', done: false },
-    { name: 'KFC', category: 'Food & Drinks', done: false },
-    { name: 'Study Date (2x a week)', category: 'Cozy & Indoors', done: false },
-    { name: '101 Learning Date', category: 'Cultural', done: false },
-    { name: 'Chess Date', category: 'Games & Fun', done: false },
-    { name: 'Zootopia at TEDU Date', category: 'Cultural', done: false },
-    { name: 'Lego date doing our Lego figures', category: 'Creative', done: false },
-    { name: 'Shawarma Date', category: 'Food & Drinks', done: false },
-    { name: 'Coffee Date', category: 'Food & Drinks', done: false },
-    { name: 'Beer Date', category: 'Food & Drinks', done: false },
-    { name: 'Sushi Date', category: 'Food & Drinks', done: false },
-    { name: 'Sputnik Date', category: 'Outdoor', done: false },
-    { name: 'Clay Making Date', category: 'Creative', done: false },
-    { name: 'Antique Shop Date', category: 'Outdoor', done: false },
-    { name: 'Pasta Date(Makarna olan)', category: 'Food & Drinks', done: false },
-    { name: 'Theater Date', category: 'Cultural', done: false },
-    { name: 'Ulus-Kale Date', category: 'Outdoor', done: false },
-    { name: 'Müze Date', category: 'Cultural', done: false },
-    { name: 'Arcade Date', category: 'Games & Fun', done: false }
-];
+const CATEGORY_EMOJIS = {
+    'Cultural': '🎭', 'Games & Fun': '🎮', 'Food & Drinks': '🍕',
+    'Outdoor': '🌳', 'Cozy & Indoors': '🏠', 'Creative': '🎨',
+    'All': '📜', 'General': '✨'
+};
 
-// 3. Verileri Yükle
+// ==========================================
+// A. GİRİŞ KONTROLLERİ (LOGIN / LOGOUT)
+// ==========================================
+auth.onAuthStateChanged((user) => {
+    const loginScreen = document.getElementById('login-screen');
+    const mainContent = document.getElementById('main-content');
+    
+    if (user) {
+        loginScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        loadIdeas(); 
+    } else {
+        loginScreen.style.display = 'flex';
+        mainContent.style.display = 'none';
+    }
+});
+
+window.handleLogin = function() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('login-error');
+
+    if (!email || !password) {
+        errorEl.innerText = "Lütfen alanları doldur! 🐾";
+        return;
+    }
+
+    auth.signInWithEmailAndPassword(email, password).catch(error => {
+        errorEl.innerText = "Hatalı giriş! Şifreni kontrol et. 🥺";
+    });
+};
+
+window.handleLogout = function() {
+    if(confirm("Çıkış yapmak istiyor musun? 🐾")) auth.signOut();
+};
+
+window.togglePasswordVisibility = function() {
+    const passInput = document.getElementById('login-password');
+    const toggleIcon = document.querySelector('.toggle-password');
+    if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleIcon.innerText = '🙈';
+    } else {
+        passInput.type = 'password';
+        toggleIcon.innerText = '👁️';
+    }
+};
+
+// ==========================================
+// B. FİKİRLERİ GÖSTERME / KART OLUŞTURMA
+// ==========================================
 function loadIdeas() {
     ideasRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-            ideas = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-        } else {
-            DEFAULT_IDEAS.forEach(item => ideasRef.push(item));
-        }
+        ideas = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
         renderIdeas();
     });
 }
 
-// 4. Filtreleme ve Dinamik Başlık Mantığı
-function filterIdeas(category) {
-    currentFilter = category;
-    
-    // Filtre butonlarının aktiflik durumunu güncelle
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        // Buton metinlerini kategorilerle eşleştiriyoruz (Örn: "Food" -> "Food & Drinks")
-        const btnText = btn.innerText;
-        const isMatch = (category === 'All' && btnText === 'All') ||
-                        (category === 'Games & Fun' && btnText === 'Games') ||
-                        (category === 'Food & Drinks' && btnText === 'Food') ||
-                        (category === btnText);
-        
-        btn.classList.toggle('active', isMatch);
-    });
-
-    // BAŞLIĞI GÜNCELLE
-    const titleEl = document.getElementById('list-title');
-    if (titleEl) {
-        const emoji = CATEGORY_EMOJIS[category] || CATEGORY_EMOJIS['General'];
-        const titleText = category === 'All' ? 'All Ideas' : `${category} Ideas`;
-        titleEl.innerText = `${emoji} ${titleText}`;
-    }
-    
-    renderIdeas();
-}
-
-// 5. Kart Oluşturma
-function createCardElement(idea) {
-    const template = document.getElementById('date-card-template');
-    const clone = template.content.cloneNode(true);
-    
-    const card = clone.querySelector('.date-card');
-    const nameEl = clone.querySelector('.date-name');
-    const catEl = clone.querySelector('.result-cat');
-    const emojiEl = clone.querySelector('.card-emoji');
-    const tickBtn = clone.querySelector('.tick-btn');
-    const delBtn = clone.querySelector('.delete-btn');
-
-    nameEl.textContent = idea.name;
-    emojiEl.textContent = CATEGORY_EMOJIS[idea.category] || CATEGORY_EMOJIS['General'];
-    
-    if (idea.done) {
-        nameEl.style.textDecoration = "line-through";
-        card.style.opacity = "0.7";
-        tickBtn.classList.add('ticked');
-        tickBtn.textContent = "✓";
-        if (catEl) catEl.remove();
-    } else {
-        if (catEl) catEl.textContent = idea.category;
-    }
-
-    tickBtn.onclick = () => toggleDone(idea.id);
-    delBtn.onclick = () => deleteIdea(idea.id);
-
-    return clone;
-}
-
-// 6. Ekrana Çizdirme
 function renderIdeas() {
     const listContainer = document.getElementById('ideas-list');
     const doneContainer = document.getElementById('done-list');
-    const countLabel = document.getElementById('done-count');
-
     if (!listContainer || !doneContainer) return;
 
     listContainer.innerHTML = "";
@@ -137,7 +96,6 @@ function renderIdeas() {
     const pending = filtered.filter(i => !i.done);
     const done = ideas.filter(i => i.done);
 
-    // Kategoriye göre gruplandırma
     const categories = {};
     pending.forEach(idea => {
         if (!categories[idea.category]) categories[idea.category] = [];
@@ -147,55 +105,97 @@ function renderIdeas() {
     for (const cat in categories) {
         const header = document.createElement('div');
         header.className = 'category-label';
-        header.textContent = `${CATEGORY_EMOJIS[cat] || '✨'} ${cat}`;
+        header.innerText = `${CATEGORY_EMOJIS[cat] || '✨'} ${cat}`;
         listContainer.appendChild(header);
-        categories[cat].forEach(i => listContainer.appendChild(createCardElement(i)));
+        
+        categories[cat].forEach(idea => listContainer.appendChild(createCardElement(idea)));
     }
 
-    done.forEach(i => doneContainer.appendChild(createCardElement(i)));
-    if (countLabel) countLabel.textContent = done.length;
+    done.forEach(idea => doneContainer.appendChild(createCardElement(idea)));
+    document.getElementById('done-count').innerText = done.length;
 }
 
-// 7. Yardımcı Fonksiyonlar
-function spinDate() {
+function createCardElement(idea) {
+    const template = document.getElementById('date-card-template');
+    const clone = template.content.cloneNode(true);
+    
+    clone.querySelector('.date-name').innerText = idea.name;
+    clone.querySelector('.card-emoji').innerText = CATEGORY_EMOJIS[idea.category] || '✨';
+    
+    if (idea.done) {
+        clone.querySelector('.date-name').style.textDecoration = "line-through";
+        clone.querySelector('.date-name').style.opacity = "0.6";
+        clone.querySelector('.tick-btn').classList.add('ticked');
+        clone.querySelector('.tick-btn').innerText = "✓";
+        const catEl = clone.querySelector('.result-cat');
+        if(catEl) catEl.remove();
+    } else {
+        clone.querySelector('.result-cat').innerText = idea.category;
+    }
+
+    clone.querySelector('.tick-btn').onclick = () => window.toggleDone(idea.id);
+    clone.querySelector('.delete-btn').onclick = () => window.deleteIdea(idea.id);
+
+    return clone;
+}
+
+// ==========================================
+// C. BUTON ETKİLEŞİMLERİ VE EKLENTİLER
+// ==========================================
+
+window.spinDate = function() {
     const activeIdeas = ideas.filter(i => !i.done);
-    if (activeIdeas.length === 0) return alert("No ideas left! 🐾");
+    if (activeIdeas.length === 0) return alert("Yapılacak fikir kalmadı! 🐾");
+    
     const selected = activeIdeas[Math.floor(Math.random() * activeIdeas.length)];
     const resultCard = document.querySelector('.result-card');
     
     resultCard.innerHTML = `
-        <div class="result-text" style="font-family:'Baloo 2'; font-size:2rem; color:#4a3728;">${selected.name}</div>
-        <span class="result-cat" style="background:#ffb7c5; padding:5px 15px; border-radius:20px; font-weight:800; color:#4a3728;">${selected.category}</span>
+        <div style="font-family:'Baloo 2'; font-size:1.8rem; color:#4a3728; margin-bottom: 5px; text-align:center;">${selected.name}</div>
+        <span class="result-cat" style="background:#ffb7c5; color:white; padding: 4px 10px; border-radius: 10px; font-size: 1rem; font-weight: 800;">${selected.category}</span>
     `;
-}
+};
 
-function addIdea() {
+window.filterIdeas = function(category) {
+    currentFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        const btnText = btn.innerText;
+        const isMatch = (category === 'All' && btnText === 'All') ||
+                        (category === 'Games & Fun' && btnText === 'Games') ||
+                        (category === 'Food & Drinks' && btnText === 'Food') ||
+                        (category === btnText);
+        btn.classList.toggle('active', isMatch);
+    });
+
+    const titleEl = document.getElementById('list-title');
+    if (titleEl) {
+        const emoji = CATEGORY_EMOJIS[category] || CATEGORY_EMOJIS['General'];
+        const titleText = category === 'All' ? 'All Ideas' : `${category} Ideas`;
+        titleEl.innerText = `${emoji} ${titleText}`;
+    }
+    renderIdeas();
+};
+
+window.addIdea = function() {
     const nameInput = document.getElementById('idea-name');
     const catSelect = document.getElementById('idea-category');
-    if (!nameInput.value.trim()) return;
+    if (!nameInput.value.trim() || !auth.currentUser) return;
     
-    ideasRef.push({ 
-        name: nameInput.value, 
-        category: catSelect.value, 
-        done: false 
-    });
-    
+    ideasRef.push({ name: nameInput.value, category: catSelect.value, done: false });
     nameInput.value = "";
-    if (typeof showToast === "function") showToast();
-}
+};
 
-function toggleDone(id) {
+window.toggleDone = function(id) {
+    if (!auth.currentUser) return;
     const idea = ideas.find(i => i.id === id);
     if (idea) database.ref('ideas/' + id).update({ done: !idea.done });
-}
+};
 
-function deleteIdea(id) {
-    if(confirm("Delete this idea? 🐾")) database.ref('ideas/' + id).remove();
-}
+window.deleteIdea = function(id) {
+    if (!auth.currentUser) return;
+    if(confirm("Silmek istediğine emin misin? 🐾")) database.ref('ideas/' + id).remove();
+};
 
-function toggleDoneList() {
-    const doneList = document.getElementById('done-list');
-    if (doneList) doneList.classList.toggle('open');
-}
-
-window.onload = loadIdeas;
+window.toggleDoneList = function() {
+    document.getElementById('done-list').classList.toggle('open');
+};
