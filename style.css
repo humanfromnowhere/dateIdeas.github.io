@@ -10,7 +10,7 @@ body {
     background-size: cover;
 }
 
-/* 1. LOGIN EKRANI (HOWL GIF ARKA PLANI) */
+/* 1. LOGIN EKRANI (HOWL GIF ARKA PLANI BURADA) */
 #login-screen {
     display: flex;
     justify-content: center;
@@ -18,38 +18,45 @@ body {
     position: fixed;
     top: 0; left: 0; 
     width: 100vw; height: 100vh;
-    /* Kendi klasöründeki howl.gif */
-    background: url('howl.gif') no-repeat center center fixed;
+    /* LOGIN İÇİN HOWL GIF'İ */
+    background: url('howl.gif') no-repeat center center fixed; /* Kendi gif dosyan */
     background-size: cover;
     z-index: 9999;
 }
 
 .login-box {
-    background: rgba(255, 255, 255, 0.96); /* %96 opak, daha net */
+    background: rgba(255, 255, 255, 0.88); /* Hafif transparanlık */
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: center;
     width: 90%; max-width: 350px;
-    border: 3px solid #ffb7c5;
+    border: 3px solid rgba(255, 183, 197, 0.8);
+    backdrop-filter: blur(5px); /* Arkadaki gifi hafif buğulu yapar */
 }
 
 .login-box h2 { font-family: 'Baloo 2', sans-serif; color: #4a3728; margin-bottom: 20px; font-size: 2rem;}
 
-.password-container { position: relative; width: 100%; margin-bottom: 15px; }
+.password-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
 
 .login-input {
     width: 100%; padding: 15px;
     border: 2px solid #ddd; border-radius: 10px;
-    font-size: 1rem; background: #fdfdfd;
+    font-size: 1rem; background: rgba(253, 253, 253, 0.9);
 }
 .password-container .login-input { padding-right: 45px;}
 .login-input:focus { border-color: #ffb7c5; outline: none; }
 
 .toggle-password {
-    position: absolute; right: 15px; top: 50%;
-    transform: translateY(-50%); cursor: pointer; 
-    font-size: 1.2rem; color: #888; user-select: none;
+    position: absolute;
+    right: 15px; top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer; font-size: 1.2rem;
+    color: #888; user-select: none;
 }
 
 .login-btn {
@@ -69,12 +76,13 @@ body {
     padding-bottom: 50px;
 }
 
-/* HEADER BİRLEŞTİRİLDİ (Hata Buradaydı) */
+/* Kutu kalktı, Date Ideas yazısı kaldı */
 header { 
     background: transparent;
     padding: 30px 20px 10px; 
     text-align: center; 
     position: relative;
+    box-shadow: none;
     width: 100%;
     min-height: 100px; 
     display: flex;
@@ -85,74 +93,78 @@ header {
 header h1 { 
     font-family: 'Baloo 2', sans-serif; 
     font-size: 2.6rem; 
-    color: #ffffff;
+    margin-top: 10px; 
+    color: #ffffff; /* Yazı rengi beyaz */
     text-shadow: 2px 3px 8px rgba(74, 55, 40, 0.7); 
 }
 
 .cat-logo { 
-    font-size: 3.5rem; display: block; 
+    font-size: 3rem; display: block; 
+    color: white; /* Kaomojiyi beyaz yaptık */
     animation: float 3s ease-in-out infinite;
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
 }
 
 .logout-btn { 
-    /* İŞTE SİHİRLİ DOKUNUŞ BURASI: absolute yerine fixed yapıyoruz */
-    position: fixed; 
-    
-    right: 20px; /* Ekranın sağından 20px */
-    top: 20px;   /* Ekranın üstünden 20px */
-    
+    position: absolute; right: 20px; top: 30px; 
     background: rgba(255, 183, 197, 0.9); 
     border: 2px solid white; 
     color: white; border-radius: 12px; font-weight: 800;
     cursor: pointer; padding: 8px 15px; transition: 0.2s;
-    
-    /* Emoji veya başka bir şeyin altında kalmaması için z-index'i çok yüksek veriyoruz */
-    z-index: 9999; 
     box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
 .logout-btn:hover { background: #ff9eaf; transform: scale(1.05); }
 
-
-/* 3. KERTENKELE VE BUTON ALANI */
-.randomizer { 
-    text-align: center; 
-    padding: 20px 15px; 
-    position: relative; 
+/* İÇERİK KARTLARI VE BAŞLIKLAR (Transparanlık eklendi) */
+.section-title { 
+    font-family: 'Baloo 2', sans-serif; text-align: center; 
+    margin: 30px auto 15px; font-size: 1.8rem; color: #4a3728; 
+    background: rgba(255, 255, 255, 0.85); 
+    display: table; 
+    padding: 10px 25px; border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(4px);
 }
 
-/* Kertenkele Kutusu */
-.lizard-box {
-    width: 80px; 
-    height: 80px;
-    background: white;
-    border: 2px solid #ffb7c5;
-    border-radius: 15px;
-    padding: 5px;
-    position: absolute;
-    top: -15px; 
-    right: 25px; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    z-index: 10;
-    transform: rotate(8deg); 
+.category-label { 
+    font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; 
+    margin: 25px 15px 10px; color: #ff859e; 
+    background: rgba(255, 255, 255, 0.85); 
+    display: inline-block; padding: 8px 20px; 
+    border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.lizard-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
+.date-card { 
+    background: rgba(255, 255, 255, 0.88); 
+    margin: 10px 15px; padding: 20px; 
+    border-radius: 15px; display: flex; align-items: center; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    transition: 0.3s;
+    backdrop-filter: blur(2px);
 }
+
+.result-cat { 
+    background: rgba(255, 224, 230, 0.9); color: #ff859e; padding: 4px 10px; 
+    border-radius: 10px; font-size: 0.8rem; font-weight: 800; display: inline-block; margin-top: 5px;
+}
+
+.tick-btn { 
+    width: 30px; height: 30px; border: 2px solid #ddd; 
+    border-radius: 50%; background: white; cursor: pointer; 
+    color: white; font-weight: bold; font-size: 1rem; display: flex; justify-content: center; align-items: center;
+}
+.tick-btn.ticked { background: #ffb7c5; border-color: #ffb7c5; }
+
+/* RANDOMIZER VE FORMLAR */
+.randomizer { text-align: center; padding: 20px 15px; }
 
 .result-card { 
-    background: rgba(255, 255, 255, 0.96); 
-    padding: 30px 20px; 
-    border-radius: 20px; 
-    margin-bottom: 20px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-    border: 3px solid #ffe0e6;
-    min-height: 120px;
+    background: rgba(255, 255, 255, 0.9); 
+    padding: 30px 20px; border-radius: 20px; 
+    margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    border: 3px solid rgba(255, 224, 230, 0.8); min-height: 120px; 
     display: flex; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(3px);
 }
 
 .spin-btn { 
@@ -166,61 +178,23 @@ header h1 {
 .filter-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 25px; }
 .filter-btn { 
     padding: 8px 18px; border-radius: 20px; border: 2px solid #ffb7c5; 
-    background: rgba(255, 255, 255, 0.9); 
+    background: rgba(255, 255, 255, 0.8); 
     color: #ffb7c5; font-weight: 700; cursor: pointer; transition: 0.3s; 
 }
 .filter-btn.active, .filter-btn:hover { background: #ffb7c5; color: white; }
 
-
-/* İÇERİK KARTLARI VE BAŞLIKLAR */
-.section-title { 
-    font-family: 'Baloo 2', sans-serif; text-align: center; 
-    margin: 30px auto 15px; font-size: 1.8rem; color: #4a3728; 
-    background: rgba(255, 255, 255, 0.96); 
-    display: table; 
-    padding: 10px 25px; border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.category-label { 
-    font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; 
-    margin: 25px 15px 10px; color: #ff859e; 
-    background: rgba(255, 255, 255, 0.96); 
-    display: inline-block; padding: 8px 20px; 
-    border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.date-card { 
-    background: rgba(255, 255, 255, 0.96); 
-    margin: 10px 15px; padding: 20px; 
-    border-radius: 15px; display: flex; align-items: center; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    transition: 0.3s;
-}
-
-.result-cat { 
-    background: #ffe0e6; color: #ff859e; padding: 4px 10px; 
-    border-radius: 10px; font-size: 0.8rem; font-weight: 800; display: inline-block; margin-top: 5px;
-}
-
-.tick-btn { 
-    width: 30px; height: 30px; border: 2px solid #ddd; 
-    border-radius: 50%; background: white; cursor: pointer; 
-    color: white; font-weight: bold; font-size: 1rem; display: flex; justify-content: center; align-items: center;
-}
-.tick-btn.ticked { background: #ffb7c5; border-color: #ffb7c5; }
-
 .add-form { 
-    background: rgba(255, 255, 255, 0.96); 
+    background: rgba(255, 255, 255, 0.88); 
     margin: 30px 15px; padding: 25px; 
     border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+    backdrop-filter: blur(2px);
 }
 .add-form h3 { font-family: 'Baloo 2', sans-serif; color: #4a3728; margin-bottom: 15px; }
 .form-input, .form-select { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Nunito', sans-serif;}
 .add-btn { width: 100%; background: #a2d2ff; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 1.1rem;}
 
 .done-section { margin: 30px 15px; }
-.done-toggle { width: 100%; background: rgba(255, 255, 255, 0.96); border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; color: #666; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+.done-toggle { width: 100%; background: rgba(255, 255, 255, 0.88); border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; color: #666; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
 .done-list { display: none; margin-top: 15px; }
 .done-list.open { display: block; }
 
@@ -228,6 +202,37 @@ header h1 {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
 }
+
+/* 3. KERTENKELE VE BUTON ALANI (YENİ) */
+.randomizer { 
+    text-align: center; 
+    padding: 20px 15px; 
+    position: relative; /* Kertenkeleyi buna göre konumlandıracağız */
+}
+
+/* Kertenkele Kutusu */
+.lizard-box {
+    width: 80px; /* Küçük ve şık boyut */
+    height: 80px;
+    background: white;
+    border: 2px solid #ffb7c5;
+    border-radius: 15px;
+    padding: 5px;
+    position: absolute;
+    top: -15px; /* Butonun biraz üzerinde durması için */
+    right: 25px; /* Sağ üst köşe */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+    transform: rotate(8deg); /* Hafif eğik durması tatlılık katar */
+}
+
+.lizard-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
 /* ==========================================
    MOBİL UYUM (RESPONSIVE DESIGN) DÜZELTMELERİ
    ========================================== */
@@ -239,14 +244,20 @@ header h1 {
 
     /* 2. Login Kutusunu Daraltma */
     .login-box {
-        padding: 25px 20px; /* İç boşlukları azalttık ki yazılar sıkışmasın */
-        width: 92%; /* Telefonda kenarlara biraz daha yaklaşsın */
+        padding: 25px 20px; /* İç boşlukları azalttık */
+        width: 92%; /* Kenarlara biraz daha yaklaşsın */
     }
 
-    /* 3. Başlığı Küçültme */
+    /* 3. Başlıkları Küçültme */
     .login-box h2 {
         font-size: 1.6rem; 
         margin-bottom: 15px;
+    }
+    header h1 { 
+        font-size: 1.8rem; /* Ana sayfa başlığını küçülttük */
+    }
+    .cat-logo { 
+        font-size: 2.2rem; /* Emojiyi küçülttük */
     }
 
     /* 4. iPhone Auto-Zoom Engelleme (Çok Kritik!) */
@@ -255,13 +266,18 @@ header h1 {
         padding: 12px;
     }
 
-    /* 5. Şifre Gözünü Hizalama */
+    /* 5. Konumlandırmaları Düzeltme */
     .password-container .login-input { 
         padding-right: 40px;
     }
+    .toggle-password {
+        right: 12px;
+    }
 
-    .login-btn {
-        padding: 12px;
-        font-size: 1rem;
+    .lizard-box {
+        width: 60px; /* Kertenkeleyi mobilde küçülttük */
+        height: 60px;
+        right: 10px; /* Kenara yaklaştırdık */
+        top: -10px;
     }
 }
